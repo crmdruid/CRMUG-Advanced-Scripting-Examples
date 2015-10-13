@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+    <style>
+        body {
+            font-family: Segoe\000020UI,Tahoma,Arial;
+            font-size: 12px;
+            margin: 3px;
+        }
+    </style>
+    
+    <script src="/WebResources/lat_jquery1.9.1.min.js"></script>
+    <script src="/WebResources/lat_ProcessData.js"></script>
+    <script>
+        $(function () {
+            LAT_ProcessData.GetDataParam();
+        });
+    </script>
+</head>
+<body>
+    <span style="text-decoration: underline;">Passed From Form:</span>
+    <table id="PassedValues"></table>
+</body>
+</html>

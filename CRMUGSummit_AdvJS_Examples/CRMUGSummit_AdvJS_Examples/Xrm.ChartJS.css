@@ -1,0 +1,20 @@
+﻿#message {
+    color: #666666;
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    font-family: Segoe UI, Arial, sans-serif;
+}
+
+#legend {
+    margin: 0 0 0 10px;
+    padding: 0;
+    list-style-type: none;
+}
+
+.box {
+    font-size: 12px;
+    font-family: Segoe UI, Arial, sans-serif;
+    overflow: hidden;
+    margin-right: 5px;
+}

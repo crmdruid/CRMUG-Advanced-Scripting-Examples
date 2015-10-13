@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+    <style>
+        body {
+            font-family: Segoe\000020UI,Tahoma,Arial;
+            font-size: 12px;
+            margin: 3px;
+        }
+    </style>
+    
+    <script type="text/javascript" src="ClientGlobalContext.js.aspx"></script>
+    <script src="/WebResources/lat_jquery1.9.1.min.js"></script>
+    <script src="/WebResources/lat_RetrieveMultipleAccountsREST.js"></script>
+    <script>
+        $(function () {
+            LAT_RetrieveMultipleAccounts.RetrieveTop5YTD();
+        });
+    </script>
+</head>
+<body>
+    <span style="text-decoration: underline;">Top 5 Revenue</span>
+    <table id="Top5YTD"></table>
+</body>
+</html>

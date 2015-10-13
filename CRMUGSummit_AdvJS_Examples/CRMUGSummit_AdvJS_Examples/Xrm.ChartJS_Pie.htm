@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Chart.JS Pie</title>
+    <link rel="stylesheet" href="/WebResources/lat_Xrm.ChartJS.css" />
+    <script src="/WebResources/lat_jQuery1.9.1.min.js"></script>
+    <!--http://www.chartjs.org/-->
+    <!--[if lte IE 8]>
+            <script src="/WebResources/lat_excanvas.js"></script>
+        <![endif]-->
+    <script src="/WebResources/lat_Chart.min.js"></script>
+    <script type="text/javascript">
+        Xrm = window.Xrm || { __namespace: true };
+        Xrm.ChartJS_Pie = Xrm.ChartJS_Pie || { __namespace: true };
+        Xrm.ChartJS_Pie.ChartData = [];
+        Xrm.ChartJS_Pie.Fields = [];
+        Xrm.ChartJS_Pie.Colors = [];
+        Xrm.ChartJS_Pie.Legend = true;
+
+        $(function () {
+            Xrm.ChartJS_Pie.GetDataParam();
+        });
+
+        Xrm.ChartJS_Pie.CreateChartData = function () {
+            Xrm.ChartJS_Pie.ChartData = [];
+            for (var i = 0; i < Xrm.ChartJS_Pie.Fields.length; i++) {
+                var data = {
+                    value: window.parent.Xrm.Page.getAttribute(Xrm.ChartJS_Pie.Fields[i]).getValue(),
+                    color: (Xrm.ChartJS_Pie.Colors[i] !== null && Xrm.ChartJS_Pie.Colors[i] !== undefined) ? Xrm.ChartJS_Pie.Colors[i] :
+                        '#' + ('000000' + Math.floor(Math.random() * 16777215).toString(16)).slice(-6),
+                    field: Xrm.ChartJS_Pie.Fields[i]
+                };
+                Xrm.ChartJS_Pie.ChartData.push(data);
+
+                window.parent.Xrm.Page.getAttribute(Xrm.ChartJS_Pie.Fields[i]).addOnChange(Xrm.ChartJS_Pie.SetOnChange);
+            }
+
+            var hasData = $.grep(Xrm.ChartJS_Pie.ChartData, function (e) { return e.value !== null && e.value !== undefined && e.value !== 0; });
+            (hasData.length > 0) ? $("#message").html("") : $("#message").html("No values to chart");
+
+            (Xrm.ChartJS_Pie.Legend) ? Xrm.ChartJS_Pie.CreateLegend(Xrm.ChartJS_Pie.ChartData) : $("#legend").css('visibility', 'hidden');
+
+            var myPie = new Chart($("#canvas")[0].getContext("2d")).Pie(Xrm.ChartJS_Pie.ChartData, Xrm.ChartJS_Pie.GetChartOptions());
+        };
+
+        Xrm.ChartJS_Pie.GetChartOptions = function () {
+            return {
+                //Boolean - Whether we should show a stroke on each segment
+                segmentShowStroke: true,
+                //String - The colour of each segment stroke
+                segmentStrokeColor: "#fff",
+                //Number - The width of each segment stroke
+                segmentStrokeWidth: 2,
+                //Boolean - Whether we should animate the chart	
+                animation: true,
+                //Number - Amount of animation steps
+                animationSteps: 100,
+                //String - Animation easing effect
+                animationEasing: "easeOutBounce",
+                //Boolean - Whether we animate the rotation of the Pie
+                animateRotate: true,
+                //Boolean - Whether we animate scaling the Pie from the centre
+                animateScale: false,
+                //Function - Will fire on animation completion.
+                onAnimationComplete: null
+            };
+        };
+
+        Xrm.ChartJS_Pie.CreateLegend = function (data) {
+            $("#legend li").remove();
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].value !== null && data[i].value !== undefined && data[i].value !== 0)
+                    $("#legend").append("<li><span class='box' style='background-color: " + data[i].color + ";'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"
+                        + window.parent.Xrm.Page.getControl(data[i].field).getLabel() + "</li>");
+            }
+        };
+
+        Xrm.ChartJS_Pie.SetOnChange = function () {
+            var frameId = window.frameElement.id;
+            var frame = window.parent.Xrm.Page.getControl(frameId).getObject();
+            frame.contentWindow.Xrm.ChartJS_Pie.CreateChartData();
+        };
+
+        //fields=new_value1,new_value2,new_value3,new_value4&legend=true&colors=#4BB7D1,#99BE92,#FFB18F,#DB6A7E
+        Xrm.ChartJS_Pie.GetDataParam = function () {
+            var vals = [];
+            if (location.search != "") {
+                vals = location.search.substr(1).split("&");
+                for (var i = 0; i < vals.length; i++) {
+                    vals[i] = vals[i].replace(/\+/g, " ").split("=");
+                }
+                for (var j = 0; j < vals.length; j++) {
+                    if (vals[j][0].toLowerCase() == "data") {
+                        Xrm.ChartJS_Pie.ParseData(vals[j][1]);
+                        break;
+                    }
+                }
+            }
+
+            if (Xrm.ChartJS_Pie.Fields.length === 0) {
+                $("#message").append("Please add a comma delimted list of fields in the web resource configuration (Custom Parameter) area");
+                return;
+            }
+            Xrm.ChartJS_Pie.CreateChartData();
+        };
+
+        Xrm.ChartJS_Pie.ParseData = function (data) {
+            var vals = [];
+            vals = decodeURIComponent(data).split("&");
+            for (var i = 0; i < vals.length; i++) {
+                vals[i] = vals[i].replace(/\+/g, " ").split("=");
+            }
+
+            for (var x = 0; x < vals.length; x++) {
+                switch (vals[x][0].toUpperCase()) {
+                    case "FIELDS":
+                        Xrm.ChartJS_Pie.Fields = vals[x][1].split(",");
+                        break;
+                    case "LEGEND":
+                        Xrm.ChartJS_Pie.Legend = (vals[x][1].toUpperCase() === "TRUE") ? true : false;
+                        break;
+                    case "COLORS":
+                        Xrm.ChartJS_Pie.Colors = vals[x][1].split(",");
+                        break;
+                }
+            }
+        };
+    </script>
+</head>
+<body>
+    <div id="message"></div>
+    <div>
+        <canvas id="canvas" height="150" width="150" style="float: left;"></canvas>
+        <ul id="legend" style="float: left">
+        </ul>
+    </div>
+</body>
+</html>
