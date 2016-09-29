@@ -3,7 +3,7 @@
         Test_Function: function () {
             //debugger;
 
-            alert("Hello");
+        	Xrm.Utility.alertDialog("Hello");
         }
     }
 }());
